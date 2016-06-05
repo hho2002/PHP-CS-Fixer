@@ -100,7 +100,8 @@ final class EregToPregFixer extends AbstractFixer
                 $string = substr($tokens[$match[2]]->getContent(), 1, -1);
                 $quote = substr($tokens[$match[2]]->getContent(), 0, 1);
                 $delim = $this->getBestDelimiter($string);
-                $preg = $delim.addcslashes($string, $delim).$delim.'D'.$map[2];
+                //$preg = $delim.addcslashes($string, $delim).$delim.'D'.$map[2];
+                $preg = $delim.addcslashes($string, $delim).$delim.$map[2];
 
                 // check if the preg is valid
                 if (!$this->checkPreg($preg)) {
