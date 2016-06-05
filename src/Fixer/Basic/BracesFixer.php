@@ -199,6 +199,10 @@ final class BracesFixer extends AbstractFixer
 
             $endBraceIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_CURLY_BRACE, $startBraceIndex);
 
+            if ($tokens->isPartialCodeMultiline($startBraceIndex, $endBraceIndex) === false) {
+                continue;
+            }
+
             $indent = $this->detectIndent($tokens, $index);
 
             // fix indent near closing brace
@@ -338,6 +342,10 @@ final class BracesFixer extends AbstractFixer
 
             $statementEndIndex = $this->findStatementEnd($tokens, $parenthesisEndIndex);
 
+            if ($tokens->isPartialCodeMultiline($parenthesisEndIndex, $statementEndIndex) === false) {
+                continue;
+            }
+
             // insert closing brace
             $tokens->insertAt($statementEndIndex + 1, array(new Token(array(T_WHITESPACE, ' ')), new Token('}')));
 
@@ -365,7 +373,15 @@ final class BracesFixer extends AbstractFixer
             } elseif ($token->isGivenKind($controlTokens) || $token->isGivenKind(CT_USE_LAMBDA)) {
                 $nextNonWhitespaceIndex = $tokens->getNextNonWhitespace($index);
 
-                if (!$tokens[$nextNonWhitespaceIndex]->equals(':')) {
+                //if (!$tokens[$nextNonWhitespaceIndex]->equals(':')) {
+                //    $tokens->ensureWhitespaceAtIndex($index + 1, 0, ' ');
+                //}
+
+                $parenthesisEndIndex = $this->findParenthesisEnd($tokens, $index);
+                $startBraceIndex = $tokens->getNextNonWhitespace($parenthesisEndIndex);
+                $startBraceToken = $tokens[$startBraceIndex];
+
+                if (!$startBraceToken->equals(':')) {
                     $tokens->ensureWhitespaceAtIndex($index + 1, 0, ' ');
                 }
 
