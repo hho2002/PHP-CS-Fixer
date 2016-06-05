@@ -224,6 +224,10 @@ final class BracesFixer extends AbstractFixer
                     $nextNonWhitespaceNestIndex = $tokens->getNextNonWhitespace($nestIndex);
                     $nextNonWhitespaceNestToken = $tokens[$nextNonWhitespaceNestIndex];
 
+                    if ($nestToken->equals(';') && $nextNonWhitespaceNestToken->getContent() === 'break') {
+                        continue;
+                    }
+
                     if (
                         // next Token is not a comment
                         !$nextNonWhitespaceNestToken->isComment() &&
